@@ -2,10 +2,14 @@
 using DCOM.Model;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Ports;
 using System.Text;
+using System.Threading;
+using System.Timers;
 using System.Windows;
 
 namespace DCOM.ViewModel
@@ -14,21 +18,43 @@ namespace DCOM.ViewModel
     {
         public MainWindowModel()
         {
-
-            EncodingName = new List<string>();
+            InitCommand();
+            InitTimeTask();
 
             var encodings = Encoding.GetEncodings();
-
+            EncodingName = new List<string>();
             for (int i = 0; i < encodings.Length; ++i)
                 EncodingName.Add(encodings[i].Name);
 
-            InitCommand();
-            
             this.ComConfig = new ComConfig();
             RefreshSerialPortList();
 
             PutLog("打开程序");
         }
+
+        #region Time task
+
+        private void InitTimeTask()
+        {
+            timedTask.Elapsed += TimedTask;
+            timedTask.Enabled = true;
+            timedTask.Start();
+            timedTask.AutoReset = true;
+        }
+
+        private void TimedTask(Object source, ElapsedEventArgs e)
+        {
+            if(dataUpdate)
+            {
+                //Update the number of received bytes displayed
+                NumberBytesReceived = receiveBuffer.Count.ToString();
+                //Update the displayed data
+                DisplayReceiveData();
+                dataUpdate = false;
+            }
+        }
+
+        #endregion
 
         #region Serial port property
         private string   comName    = string.Empty;
@@ -96,6 +122,10 @@ namespace DCOM.ViewModel
 
         #region Field define
 
+        private System.Timers.Timer timedTask = new System.Timers.Timer(10);
+
+        private bool dataUpdate = false;
+
         //Used to record the total number of bytes sent
         private int numberBytesSendInt = 0;
 
@@ -130,6 +160,7 @@ namespace DCOM.ViewModel
 
         private ComConfig comConfig;
 
+        public int maxShowByteCount = 6000;
         #endregion
 
         #region Property
@@ -208,7 +239,20 @@ namespace DCOM.ViewModel
             set { sendDataEncoding = value; RaisePropertyChanged(); }
         }
 
+        public string MaxShowByteCount
+        {
+            get { return maxShowByteCount.ToString(); }
+            set
+            {
+                try
+                {
+                    maxShowByteCount = Convert.ToInt32(value);
+                }
+                catch (Exception) { maxShowByteCount = 0; }
 
+                RaisePropertyChanged();
+            }
+        }
         #endregion
 
         #region Serial port operation
@@ -232,7 +276,7 @@ namespace DCOM.ViewModel
 
                 serialPort.RtsEnable = rtsEnable;
 
-                serialPort.DataReceived += SerialPort_DataReceived;
+                serialPort.DataReceived += new SerialDataReceivedEventHandler(SerialPort_DataReceived);
 
                 serialPort.Open();
 
@@ -287,13 +331,29 @@ namespace DCOM.ViewModel
             SendDataLog += text + '\n';
         }
 
+        private void PutSendFileLog(string fileName)
+        {
+            SendDataLog += System.DateTime.Now.ToString() + "(File)\n";
+            SendDataLog += fileName + '\n';
+        }
+
         /* Displays data according to the display type set by the user */
         private void DisplayReceiveData()
         {
+            byte[] buffer = receiveBuffer.ToArray();
+            
+
+            int offset = 0, count = buffer.Length;
+            if(count > maxShowByteCount)
+            {
+                offset = count - maxShowByteCount;
+                count = maxShowByteCount;
+            }
+
             if (receiveDisplayType == 0)
-                ReceiveData = ByteConvert.ToHex(receiveBuffer.ToArray());
+                ReceiveData = ByteConvert.ToHex(buffer, offset, count);
             else
-                ReceiveData = Encoding.GetEncoding(receiveDataEncoding).GetString(receiveBuffer.ToArray());
+                ReceiveData = Encoding.GetEncoding(receiveDataEncoding).GetString(buffer, offset, count);
         }
         #endregion
 
@@ -305,12 +365,16 @@ namespace DCOM.ViewModel
             ClearOutputCommand = new RelayCommand(ClearOutput);
             SendDataCommand = new RelayCommand(SendData);
             RefreshSerialPortListCommand = new RelayCommand(RefreshSerialPortList);
+            ReceiveDataSaveFileCommand = new RelayCommand(ReceiveDataSaveFile);
+            SendFileCommand = new RelayCommand(SendFile);
         }
 
         public RelayCommand OpenOrCloseCommand { get; set; }
         public RelayCommand ClearOutputCommand { get; set; }
         public RelayCommand SendDataCommand { get; set; }
         public RelayCommand RefreshSerialPortListCommand { get; set; }
+        public RelayCommand ReceiveDataSaveFileCommand { get; set; }
+        public RelayCommand SendFileCommand { get; set; }
         #endregion
 
         #region Command realize
@@ -408,6 +472,80 @@ namespace DCOM.ViewModel
             if (ComConfig.ComName != null && ComConfig.ComName.Count != 0) ComName = ComConfig.ComName[0];
         }
 
+
+        public void ReceiveDataSaveFile()
+        {
+
+            CommonSaveFileDialog dialog = new CommonSaveFileDialog();
+            if(dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                PutLog("正在尝试将接收区数据保存到 " + dialog.FileName);
+                new Thread(() =>
+                {
+                    
+                    byte[] buffer;
+                    if(File.Exists(dialog.FileName)) File.Delete(dialog.FileName);
+                    using (var fileStream = new FileStream(dialog.FileName, FileMode.OpenOrCreate))
+                    {
+                        try
+                        {
+                            buffer = receiveBuffer.ToArray();
+                            fileStream.Write(buffer, 0, buffer.Length);
+                            PutLog("成功将接收区数据保存到文件 " + dialog.FileName);
+                        }
+                        catch (Exception)
+                        {
+                            PutLog("文件保存失败 " + dialog.FileName);
+                        }
+                    }
+
+                }).Start();
+            }
+        }
+
+        public void SendFile()
+        {
+            if (serialPort == null || !serialPort.IsOpen)
+            {
+                PutLog("请先连接串口后再发送数据!");
+                return;
+            }
+
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            if(dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                PutLog("正在尝试发送文件 " + dialog.FileName);
+
+                new Thread(() => 
+                {
+                    int count;
+                    byte[] buffer = new byte[16];
+                    using (var fileStream = new FileStream(dialog.FileName, FileMode.Open))
+                    {
+                        try
+                        {
+                            while ((count = fileStream.Read(buffer, 0, 16)) > 0)
+                            {
+                                serialPort.Write(buffer, 0, count);
+                                numberBytesSendInt += count;
+                                NumberBytesSend = numberBytesSendInt.ToString();
+                            }
+
+                            PutLog("成功发送文件 " + dialog.FileName);
+                            PutSendFileLog(dialog.FileName);
+                        }
+                        catch(Exception)
+                        {
+                            PutLog("文件发送失败 " + dialog.FileName);
+                        }
+                    }
+
+                }).Start();
+                
+            }
+            
+        }
+
         #endregion
 
         #region Event
@@ -415,16 +553,19 @@ namespace DCOM.ViewModel
         /* The serial port receives the data event callback function */
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            byte[] readBuffer = new byte[serialPort.ReadBufferSize];
-            int size = serialPort.Read(readBuffer, 0, readBuffer.Length);
-            for (int i = 0; i < size; ++i)
+            SerialPort sp = (SerialPort)sender;
+            
+            byte[] readBuffer = new byte[sp.ReadBufferSize];
+
+            while(sp.BytesToRead > 0)
             {
-                receiveBuffer.Add(readBuffer[i]);
+                int size = sp.Read(readBuffer, 0, readBuffer.Length);
+                for(int i = 0; i < size; ++i)
+                    receiveBuffer.Add(readBuffer[i]);
             }
-            //Update the number of received bytes displayed
-            NumberBytesReceived = receiveBuffer.Count.ToString();
-            //Update the displayed data
-            DisplayReceiveData();
+
+            dataUpdate = true;
+
         }
 
         #endregion

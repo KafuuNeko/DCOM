@@ -74,3 +74,11 @@ C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\DCOM.csproj.CoreCompileInput
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\DCOM.csproj.CopyComplete
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\DCOM.exe
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\DCOM.pdb
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\Microsoft.WindowsAPICodePack.dll
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\Microsoft.WindowsAPICodePack.Shell.dll
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\Microsoft.WindowsAPICodePack.xml
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\Microsoft.WindowsAPICodePack.Shell.xml
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\DCOM.exe.manifest
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\DCOM.application
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\DCOM.exe.manifest
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\DCOM.application

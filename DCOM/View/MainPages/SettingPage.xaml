@@ -10,17 +10,17 @@
 
     <Page.Resources>
         <Style TargetType="ScrollBar" BasedOn="{StaticResource for_scrollbar}"/>
-
-        
     </Page.Resources>
 
     <ScrollViewer>
 
         <StackPanel Orientation="Vertical">
 
-            <TextBlock Text="串口属性" Foreground="White" FontSize="20" FontWeight="Bold" Margin="5" />
+            <TextBlock Text="串口属性" Foreground="White" FontSize="20" FontWeight="Bold" Margin="5 25 0 0"/>
 
             <StackPanel Orientation="Vertical" Margin="5 0 0 0">
+                <CheckBox Margin="10"  Content="启用请求发送 (RTS) 信号" Opacity="0.8" FontSize="15" Foreground="White" IsChecked="{Binding RtsEnable}"/>
+                
                 <TextBlock Text="串口" Foreground="White" FontSize="15" Margin="10" />
 
                 <StackPanel Orientation="Horizontal">
@@ -40,11 +40,9 @@
                 <TextBlock Text="数据位" Foreground="White" FontSize="15" Margin="10" />
                 <ComboBox FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" MinWidth="100" Margin="5 0 0 0" ItemsSource="{Binding ComConfig.DataBits}" Opacity="0.5" Text="{Binding DataBits}" />
 
-                <CheckBox Margin="10"  Content="启用请求发送 (RTS) 信号" Opacity="0.8" FontSize="15" Foreground="White" IsChecked="{Binding RtsEnable}"/>
-
             </StackPanel>
 
-            <TextBlock Text="字符编码" Foreground="White" FontSize="20" FontWeight="Bold" Margin="5" />
+            <TextBlock Text="字符编码" Foreground="White" FontSize="20" FontWeight="Bold" Margin="5 25 0 0" />
             
             <StackPanel Orientation="Vertical" Margin="5 0 0 0">
                 
@@ -54,6 +52,12 @@
                 <TextBlock Text="发送数据字符编码" Foreground="White" FontSize="15" Margin="10" />
                 <ComboBox FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" MinWidth="100" Margin="5 0 0 0" Opacity="0.5" ItemsSource="{Binding EncodingName}" Text="{Binding SendDataEncoding}" />
 
+            </StackPanel>
+
+            <TextBlock Text="显示限制" Foreground="White" FontSize="20" FontWeight="Bold" Margin="5 25 0 0"/>
+            <StackPanel Orientation="Vertical" Margin="5 0 0 0">
+                <TextBlock Text="最大显示字节数" Foreground="White" FontSize="15" Margin="10" />
+                <TextBox Text="{Binding MaxShowByteCount}" Opacity="0.5" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5 0 0 0" Height="30" FontSize="16" MinWidth="100" />
             </StackPanel>
         </StackPanel>
             

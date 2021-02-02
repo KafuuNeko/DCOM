@@ -7,8 +7,27 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="AboutPage">
+    
+    <ScrollViewer>
+        <StackPanel Orientation="Vertical">
+            <TextBlock Text="DCOM 串口调试工具" Foreground="White" FontSize="20" FontWeight="Bold" Margin="5 25 0 0"/>
+            
+            <TextBlock Foreground="White" FontSize="16" Margin="10 10 0 0">
+                作者：<Hyperlink NavigateUri="https://kafuu.cc/" Click="Hyperlink_Click">KafuuNeko</Hyperlink>
+            </TextBlock>
 
-    <Grid>
+            <TextBlock Foreground="White" FontSize="16" Margin="10 10 0 0">
+                许可：<Hyperlink NavigateUri="https://github.com/KafuuNeko/DCOM/blob/master/LICENSE" Click="Hyperlink_Click">Apache-2.0</Hyperlink>
+            </TextBlock>
+            <TextBlock Foreground="White" FontSize="16" Margin="10 10 0 0">
+                仓库：<Hyperlink NavigateUri="https://github.com/KafuuNeko/DCOM" Click="Hyperlink_Click">Github</Hyperlink>
+            </TextBlock>
+            
+        </StackPanel>
         
-    </Grid>
+    </ScrollViewer>
+
+    
+
+            
 </Page>

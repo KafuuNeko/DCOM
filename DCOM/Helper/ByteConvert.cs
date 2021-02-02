@@ -27,14 +27,20 @@ namespace DCOM.Helper
         }
 
 
-        public static string ToHex(byte[] data)
+        public static string ToHex(byte[] data, int offset = 0, int count = 0)
         {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < data.Length; ++i)
+
+            int size = count;
+
+            if (size == 0) size = data.Length;
+
+            for (int i = 0; i < size; ++i)
             {
                 if (i > 0) sb.Append(' ');
-                sb.Append(ToHex(data[i]));
+                sb.Append(ToHex(data[offset + i]));
             }
+
             return sb.ToString();
         }
 
