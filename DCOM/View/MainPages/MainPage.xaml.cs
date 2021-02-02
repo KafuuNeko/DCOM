@@ -24,7 +24,6 @@ namespace DCOM.View.MainPages
         public MainPage()
         {
             InitializeComponent();
-            this.DataContext = new MainWindowModel();
         }
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)

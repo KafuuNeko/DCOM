@@ -33,4 +33,6 @@ namespace DCOM.Helper
             return Parity.None;
         }
     }
+
+    
 }

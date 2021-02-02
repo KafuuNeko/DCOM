@@ -109,6 +109,7 @@
     </Compile>
     <Compile Include="Helper\ByteConvert.cs" />
     <Compile Include="Helper\ComHelper.cs" />
+    <Compile Include="Model\ComConfig.cs" />
     <Compile Include="ViewModel\MainWindowModel.cs" />
     <Compile Include="View\MainPages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
@@ -151,8 +152,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

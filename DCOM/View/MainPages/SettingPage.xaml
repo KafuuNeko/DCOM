@@ -8,7 +8,56 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SettingPage">
 
-    <Grid>
+    <Page.Resources>
+        <Style TargetType="ScrollBar" BasedOn="{StaticResource for_scrollbar}"/>
+
         
-    </Grid>
+    </Page.Resources>
+
+    <ScrollViewer>
+
+        <StackPanel Orientation="Vertical">
+
+            <TextBlock Text="串口属性" Foreground="White" FontSize="20" FontWeight="Bold" Margin="5" />
+
+            <StackPanel Orientation="Vertical" Margin="5 0 0 0">
+                <TextBlock Text="串口" Foreground="White" FontSize="15" Margin="10" />
+
+                <StackPanel Orientation="Horizontal">
+                    <ComboBox IsEditable="True" Height="30" IsReadOnly="False" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="100" Margin="5 0 0 0" ItemsSource="{Binding ComConfig.ComName}" Opacity="0.5" Text="{Binding ComName}" />
+                    <Button Content="刷新" Width="50" Margin="10 0 0 0" Template="{StaticResource DefaultButtonTemplate}" Foreground="White" Command="{Binding RefreshSerialPortListCommand}"/>
+                </StackPanel>
+
+                <TextBlock Text="波特率" Foreground="White" FontSize="15" Margin="10" />
+                <ComboBox IsEditable="True" Height="30" IsReadOnly="False" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" MinWidth="100" Margin="5 0 0 0" ItemsSource="{Binding ComConfig.BaudRate}" Opacity="0.5" Text="{Binding BaudRate}" />
+
+                <TextBlock Text="停止位" Foreground="White" FontSize="15" Margin="10" />
+                <ComboBox FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" MinWidth="100" Margin="5 0 0 0" ItemsSource="{Binding ComConfig.StopBit}" Opacity="0.5" Text="{Binding StopBit}" />
+
+                <TextBlock Text="校验模式" Foreground="White" FontSize="15" Margin="10" />
+                <ComboBox FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" MinWidth="100" Margin="5 0 0 0" ItemsSource="{Binding ComConfig.CheckMode}" Opacity="0.5" Text="{Binding Parity}" />
+
+                <TextBlock Text="数据位" Foreground="White" FontSize="15" Margin="10" />
+                <ComboBox FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" MinWidth="100" Margin="5 0 0 0" ItemsSource="{Binding ComConfig.DataBits}" Opacity="0.5" Text="{Binding DataBits}" />
+
+                <CheckBox Margin="10"  Content="启用请求发送 (RTS) 信号" Opacity="0.8" FontSize="15" Foreground="White" IsChecked="{Binding RtsEnable}"/>
+
+            </StackPanel>
+
+            <TextBlock Text="字符编码" Foreground="White" FontSize="20" FontWeight="Bold" Margin="5" />
+            
+            <StackPanel Orientation="Vertical" Margin="5 0 0 0">
+                
+                <TextBlock Text="接收数据解码编码" Foreground="White" FontSize="15" Margin="10" />
+                <ComboBox FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" MinWidth="100" Margin="5 0 0 0" Opacity="0.5" ItemsSource="{Binding EncodingName}" Text="{Binding ReceiveDataEncoding}" />
+
+                <TextBlock Text="发送数据字符编码" Foreground="White" FontSize="15" Margin="10" />
+                <ComboBox FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Left" Height="30" MinWidth="100" Margin="5 0 0 0" Opacity="0.5" ItemsSource="{Binding EncodingName}" Text="{Binding SendDataEncoding}" />
+
+            </StackPanel>
+        </StackPanel>
+            
+        
+    </ScrollViewer>
+
 </Page>
