@@ -1,0 +1,247 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:DCOM.Style" xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2">
+
+    <Style x:Key="ComboBoxDefaultStyle" TargetType="{x:Type ComboBox}">
+        <Setter Property="IsEditable" Value="True" />
+        <Setter Property="IsReadOnly" Value="True" />
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Height" Value="25" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ComboBox}">
+                    <ControlTemplate.Resources>
+                        <Storyboard x:Key="FocusedOn">
+                            <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
+                                                                   Storyboard.TargetName="FocusVisualElement"
+                                                                   Storyboard.TargetProperty="(UIElement.Opacity)">
+                                <SplineDoubleKeyFrame KeyTime="00:00:00.1000000" Value="1" />
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                        <Storyboard x:Key="FocusedOff">
+                            <DoubleAnimationUsingKeyFrames BeginTime="00:00:00"
+                                                                   Storyboard.TargetName="FocusVisualElement"
+                                                                   Storyboard.TargetProperty="(UIElement.Opacity)">
+                                <SplineDoubleKeyFrame KeyTime="00:00:00.3000000" Value="0" />
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </ControlTemplate.Resources>
+                    <Grid>
+                        <ToggleButton x:Name="ToggleButton" Focusable="False"
+                                              IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                              ClickMode="Press">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                    <ControlTemplate.Resources>
+                                        <Storyboard x:Key="HoverOn">
+                                            <DoubleAnimation Duration="00:00:00.1000000"
+                                                                     Storyboard.TargetName="BtnOver"
+                                                                     Storyboard.TargetProperty="Opacity" To="0.8" />
+                                            <DoubleAnimation Duration="00:00:00.1000000"
+                                                                     Storyboard.TargetName="Background_over"
+                                                                     Storyboard.TargetProperty="Opacity" To="1" />
+                                        </Storyboard>
+                                        <Storyboard x:Key="HoverOff">
+                                            <DoubleAnimation Duration="00:00:00.4000000"
+                                                                     Storyboard.TargetName="BtnOver"
+                                                                     Storyboard.TargetProperty="Opacity" To="0" />
+                                            <DoubleAnimation Duration="00:00:00.4000000"
+                                                                     Storyboard.TargetName="Background_over"
+                                                                     Storyboard.TargetProperty="Opacity" To="0" />
+                                        </Storyboard>
+                                        <Storyboard x:Key="PressedOn">
+                                            <DoubleAnimation Duration="00:00:00.1000000"
+                                                                     Storyboard.TargetName="BtnPress"
+                                                                     Storyboard.TargetProperty="Opacity" To="0.8" />
+                                            <DoubleAnimation Duration="00:00:00.1000000"
+                                                                     Storyboard.TargetName="Background_press"
+                                                                     Storyboard.TargetProperty="Opacity" To="1" />
+                                            <DoubleAnimation Duration="00:00:00.1000000"
+                                                                     Storyboard.TargetName="BtnPress_highlight"
+                                                                     Storyboard.TargetProperty="Opacity" To="1" />
+                                        </Storyboard>
+                                        <Storyboard x:Key="PressedOff">
+                                            <DoubleAnimation Duration="00:00:00.4000000"
+                                                                     Storyboard.TargetName="BtnPress"
+                                                                     Storyboard.TargetProperty="Opacity" To="0" />
+                                            <DoubleAnimation Duration="00:00:00.4000000"
+                                                                     Storyboard.TargetName="Background_press"
+                                                                     Storyboard.TargetProperty="Opacity" To="0" />
+                                            <DoubleAnimation Duration="00:00:00.4000000"
+                                                                     Storyboard.TargetName="BtnPress_highlight"
+                                                                     Storyboard.TargetProperty="Opacity" To="0" />
+                                        </Storyboard>
+                                    </ControlTemplate.Resources>
+                                    <Grid>
+                                        <Rectangle x:Name="Background" Stroke="#FFABAEB3" RadiusX="3"
+                                                           RadiusY="3" IsHitTestVisible="false" />
+                                        <Rectangle x:Name="Background_over" Stroke="#FFABACAD" RadiusX="3"
+                                                           RadiusY="3" Opacity="0" IsHitTestVisible="False" />
+                                        <Rectangle x:Name="Background_press" Stroke="#FFABABAB" RadiusX="3"
+                                                           RadiusY="3" Opacity="0" IsHitTestVisible="False" />
+                                        <Border x:Name="BtnOver" Width="{TemplateBinding ActualWidth}"
+                                                        BorderBrush="#FFABABAB" BorderThickness="1" CornerRadius="3"
+                                                        Opacity="0" HorizontalAlignment="Right" />
+                                        <Border x:Name="BtnPress" Width="{TemplateBinding ActualWidth}"
+                                                        BorderBrush="#FF595A5B" BorderThickness="1" CornerRadius="3"
+                                                        Opacity="0" HorizontalAlignment="Right">
+                                            <Border.Background>
+                                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                    <GradientStop Color="#20A0FF" Offset="0" />
+                                                    <GradientStop Color="#20A0FF" Offset="0.152" />
+                                                    <GradientStop Color="#20A0FF" Offset="0.5" />
+                                                    <GradientStop Color="#20A0FF" Offset="0.509" />
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                        </Border>
+                                        <Border x:Name="BtnPress_highlight" Margin="1" CornerRadius="2"
+                                                        Opacity="0" HorizontalAlignment="Right">
+                                            <Border.Background>
+                                                <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                                    <GradientStop Color="#FF919191" Offset="0" />
+                                                    <GradientStop Color="#A5CED1D2" Offset="0.088" />
+                                                    <GradientStop Color="#0095D9FF" Offset="0.221" />
+                                                    <GradientStop Color="#0095D9FF" Offset="0.779" />
+                                                    <GradientStop Color="#A5CED1D2" Offset="0.912" />
+                                                    <GradientStop Color="#FF919191" Offset="1" />
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                        </Border>
+                                        <Border x:Name="BtnOverlay" Margin="1" CornerRadius="2"
+                                                        HorizontalAlignment="Right">
+                                            <Border.Background>
+                                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                    <GradientStop Color="#00FFFFFF" />
+                                                    <GradientStop Color="#72FFFFFF" Offset="0.189" />
+                                                    <GradientStop Color="#72FFFFFF" Offset="0.5" />
+                                                    <GradientStop Color="#00FFFFFF" Offset="0.51" />
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                        </Border>
+                                        <Path x:Name="BtnArrow" Margin="0,0,7,0" Width="6"
+                                                      Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z "
+                                                      HorizontalAlignment="Right" Stretch="Uniform">
+                                            <Path.Fill>
+                                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                                    <GradientStop Color="#FF616368" Offset="0" />
+                                                    <GradientStop Color="#FF000000" Offset="1" />
+                                                </LinearGradientBrush>
+                                            </Path.Fill>
+                                        </Path>
+                                        <Rectangle x:Name="DisabledVisualElement" Margin="1" Fill="#00FFFFFF"
+                                                           RadiusX="3" RadiusY="3" IsHitTestVisible="false"
+                                                           Visibility="Collapsed" />
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="true">
+                                            <Trigger.ExitActions>
+                                                <BeginStoryboard Storyboard="{StaticResource HoverOff}"
+                                                                         x:Name="HoverOff_BeginStoryboard" />
+                                            </Trigger.ExitActions>
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard Storyboard="{StaticResource HoverOn}" />
+                                            </Trigger.EnterActions>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="true" />
+                                        <Trigger Property="IsPressed" Value="True">
+                                            <Trigger.ExitActions>
+                                                <BeginStoryboard Storyboard="{StaticResource PressedOff}"
+                                                                         x:Name="PressedOff_BeginStoryboard" />
+                                            </Trigger.ExitActions>
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard Storyboard="{StaticResource PressedOn}"
+                                                                         x:Name="PressedOn_BeginStoryboard" />
+                                            </Trigger.EnterActions>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Foreground"
+                                                            Value="{DynamicResource DisabledForegroundBrush}" />
+                                            <Setter Property="Visibility" TargetName="DisabledVisualElement"
+                                                            Value="Visible" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+                        <ContentPresenter HorizontalAlignment="Left" Margin="3,3,23,3" x:Name="ContentSite"
+                                                  VerticalAlignment="Center"
+                                                  Content="{TemplateBinding SelectionBoxItem}"
+                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                                  IsHitTestVisible="False" />
+                        <TextBox Visibility="Hidden" HorizontalAlignment="Left" Margin="3,3,23,3"
+                                         x:Name="PART_EditableTextBox" Style="{x:Null}" VerticalAlignment="Center"
+                                         Focusable="True" Background="Transparent"
+                                         IsReadOnly="{TemplateBinding IsReadOnly}">
+                            <TextBox.Template>
+                                <ControlTemplate TargetType="{x:Type TextBox}">
+                                    <Border x:Name="PART_ContentHost" Focusable="False"
+                                                    Background="{TemplateBinding Background}" />
+                                </ControlTemplate>
+                            </TextBox.Template>
+                        </TextBox>
+                        <Rectangle x:Name="DisabledVisualElement" Fill="#A5FFFFFF" RadiusX="4" RadiusY="4"
+                                           IsHitTestVisible="false" Visibility="Collapsed" />
+                        <Rectangle x:Name="FocusVisualElement" Margin="-1" Stroke="#FFCECFD0"
+                                           StrokeThickness="1" RadiusX="4" RadiusY="4" IsHitTestVisible="false"
+                                           Opacity="0" />
+                        <Popup IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" x:Name="Popup"
+                                       Focusable="False" AllowsTransparency="True" PopupAnimation="Slide">
+                            <Grid MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                          MinWidth="{TemplateBinding ActualWidth}" x:Name="DropDown"
+                                          SnapsToDevicePixels="True">
+                                <Border x:Name="DropDownBorder" Background="{TemplateBinding Background}" BorderThickness="1"
+                                                CornerRadius="1,1,1,1">
+                                    <Border.BorderBrush>
+                                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                            <GradientStop Color="#FFABAEB3" Offset="0" />
+                                            <GradientStop Color="#FFD4D7D9" Offset="0.355" />
+                                        </LinearGradientBrush>
+                                    </Border.BorderBrush>
+                                    <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True"
+                                                          HorizontalScrollBarVisibility="Auto"
+                                                          VerticalScrollBarVisibility="Auto" CanContentScroll="True">
+                                        <StackPanel IsItemsHost="True"
+                                                            KeyboardNavigation.DirectionalNavigation="Contained" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Trigger.ExitActions>
+                                <BeginStoryboard Storyboard="{StaticResource FocusedOff}"
+                                                         x:Name="FocusedOff_BeginStoryboard" />
+                            </Trigger.ExitActions>
+                            <Trigger.EnterActions>
+                                <BeginStoryboard Storyboard="{StaticResource FocusedOn}" />
+                            </Trigger.EnterActions>
+                        </Trigger>
+                        <Trigger Property="HasItems" Value="false">
+                            <Setter Property="MinHeight" Value="95" TargetName="DropDownBorder" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Foreground" Value="Black" />
+                            <Setter Property="Visibility" TargetName="DisabledVisualElement" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsGrouping" Value="true">
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
+                        </Trigger>
+                        <Trigger Property="AllowsTransparency" SourceName="Popup" Value="true">
+                            <Setter Property="CornerRadius" Value="0" TargetName="DropDownBorder" />
+                            <Setter Property="Margin" Value="0,2,0,0" TargetName="DropDownBorder" />
+                        </Trigger>
+                        <Trigger Property="IsEditable" Value="true">
+                            <Setter Property="IsTabStop" Value="false" />
+                            <Setter Property="Visibility" Value="Visible" TargetName="PART_EditableTextBox" />
+                            <Setter Property="Visibility" Value="Hidden" TargetName="ContentSite" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>
