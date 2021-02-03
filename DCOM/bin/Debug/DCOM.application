@@ -7,14 +7,14 @@
     <framework targetVersion="4.7.2" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="DCOM.exe.manifest" size="8750">
+    <dependentAssembly dependencyType="install" codebase="DCOM.exe.manifest" size="9434">
       <assemblyIdentity name="DCOM.exe" version="1.2.1.9" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>UKHxwAkiblqOoBVwTdq3NJiEj7blcYAEuehtSOySQyw=</dsig:DigestValue>
+        <dsig:DigestValue>/g58unK3MhapMu7KxcY+q4ulAcuuBqPwc9pWLXsF1Kw=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

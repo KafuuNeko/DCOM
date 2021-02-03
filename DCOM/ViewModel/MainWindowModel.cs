@@ -10,14 +10,16 @@ using System.IO.Ports;
 using System.Text;
 using System.Threading;
 using System.Timers;
-using System.Windows;
 
 namespace DCOM.ViewModel
 {
     class MainWindowModel : ViewModelBase
     {
+        private AppSetting setting = AppSetting.Load();
+
         public MainWindowModel()
         {
+
             InitCommand();
             InitTimeTask();
 
@@ -58,70 +60,68 @@ namespace DCOM.ViewModel
         #endregion
 
         #region Serial port property
-        private string   comName    = string.Empty;
-        private int      baudRate   = 115200;
-        private Parity   parity     = System.IO.Ports.Parity.None;
-        private int      dataBits   = 8;
-        private StopBits stopBits   = StopBits.One;
-        private bool     rtsEnable  = false;
-
+        
         public string ComName
         {
-            get { return comName; }
-            set { comName = value; RaisePropertyChanged(); }
+            get { return setting.comName; }
+            set { setting.comName = value; RaisePropertyChanged(); setting.Save(); }
         }
 
 
         public string BaudRate 
         { 
-            get { return baudRate.ToString(); }
+            get { return setting.baudRate.ToString(); }
             set 
             { 
                 try
                 {
-                    baudRate = Convert.ToInt32(value);
-                } catch (Exception) { baudRate = 0; }
+                    setting.baudRate = Convert.ToInt32(value);
+                } catch (Exception) { setting.baudRate = 0; }
                 
-                RaisePropertyChanged(); 
+                RaisePropertyChanged();
+                setting.Save();
             }
         }
 
         public string StopBit
         {
-            get { return stopBits.ToString(); }
-            set { stopBits = ComHelper.GetStopBits(value); RaisePropertyChanged(); }
+            get { return setting.stopBits.ToString(); }
+            set { setting.stopBits = ComHelper.GetStopBits(value); RaisePropertyChanged(); setting.Save(); }
         }
 
         public string Parity
         {
-            get { return parity.ToString(); }
-            set { parity = ComHelper.GetParity(value); RaisePropertyChanged(); }
+            get { return setting.parity.ToString(); }
+            set { setting.parity = ComHelper.GetParity(value); RaisePropertyChanged(); setting.Save(); }
         }
 
         public string DataBits
         {
-            get { return dataBits.ToString(); }
+            get { return setting.dataBits.ToString(); }
             set
             {
                 try
                 {
-                    dataBits = Convert.ToInt32(value);
+                    setting.dataBits = Convert.ToInt32(value);
                 }
-                catch (Exception) { dataBits = 0; }
+                catch (Exception) { setting.dataBits = 0; }
 
                 RaisePropertyChanged();
+                setting.Save();
             }
         }
 
         public bool RtsEnable
         {
-            get { return rtsEnable; }
-            set { rtsEnable = value; RaisePropertyChanged(); }
+            get { return setting.rtsEnable; }
+            set { setting.rtsEnable = value; RaisePropertyChanged(); setting.Save(); }
         }
 
         #endregion
 
         #region Field define
+
+        private ComConfig comConfig;
 
         private System.Timers.Timer timedTask = new System.Timers.Timer(100);
 
@@ -155,31 +155,10 @@ namespace DCOM.ViewModel
 
         private string numberBytesSend = "0";
 
-        private string receiveDataEncoding = "gb2312";
-
-        private string sendDataEncoding = "gb2312";
-
-        private ComConfig comConfig;
-
-        private int maxShowByteCount = 6000;
-
         private Thread sendFileThread = null;
 
         private bool sendFileStatus = false;
 
-        private bool logLineFeedSplitsTimeAndContent = false;
-
-        private bool sendLogLineFeedSplitsTimeAndContent = true;
-
-        private bool receiveLogLineFeedSplitsTimeAndContent = true;
-
-        private string receiveLogTimeFormat = "yyyy/MM/dd HH:mm:ss  fff:ffffff";
-
-        private string sendLogTimeFormat = "yyyy/MM/dd HH:mm:ss";
-
-        private string logTimeFormat = "yyyy/MM/dd HH:mm:ss";
-
-        private int fileSendingDelay = 0;
         #endregion
 
         #region Property
@@ -248,79 +227,81 @@ namespace DCOM.ViewModel
 
         public string ReceiveDataEncoding
         {
-            get { return receiveDataEncoding; }
-            set { receiveDataEncoding = value; RaisePropertyChanged(); }
+            get { return setting.receiveDataEncoding; }
+            set { setting.receiveDataEncoding = value; RaisePropertyChanged(); setting.Save(); }
         }
 
         public string SendDataEncoding
         {
-            get { return sendDataEncoding; }
-            set { sendDataEncoding = value; RaisePropertyChanged(); }
+            get { return setting.sendDataEncoding; }
+            set { setting.sendDataEncoding = value; RaisePropertyChanged(); setting.Save(); }
         }
 
         public string MaxShowByteCount
         {
-            get { return maxShowByteCount.ToString(); }
+            get { return setting.maxShowByteCount.ToString(); }
             set
             {
                 try
                 {
-                    maxShowByteCount = Convert.ToInt32(value);
+                    setting.maxShowByteCount = Convert.ToInt32(value);
                 }
-                catch (Exception) { maxShowByteCount = 0; }
+                catch (Exception) { setting.maxShowByteCount = 0; }
 
                 RaisePropertyChanged();
+                setting.Save();
             }
         }
 
         public bool LogLineFeedSplitsTimeAndContent
         {
-            get { return logLineFeedSplitsTimeAndContent; }
-            set { logLineFeedSplitsTimeAndContent = value; RaisePropertyChanged(); }
+            get { return setting.logLineFeedSplitsTimeAndContent; }
+            set { setting.logLineFeedSplitsTimeAndContent = value; RaisePropertyChanged(); setting.Save(); }
         }
 
         public bool SendLogLineFeedSplitsTimeAndContent
         {
-            get { return sendLogLineFeedSplitsTimeAndContent; }
-            set { sendLogLineFeedSplitsTimeAndContent = value; RaisePropertyChanged(); }
+            get { return setting.sendLogLineFeedSplitsTimeAndContent; }
+            set { setting.sendLogLineFeedSplitsTimeAndContent = value; RaisePropertyChanged(); setting.Save(); }
         }
 
         public bool ReceiveLogLineFeedSplitsTimeAndContent
         {
-            get { return receiveLogLineFeedSplitsTimeAndContent; }
-            set { receiveLogLineFeedSplitsTimeAndContent = value; RaisePropertyChanged(); }
+            get { return setting.receiveLogLineFeedSplitsTimeAndContent; }
+            set { setting.receiveLogLineFeedSplitsTimeAndContent = value; RaisePropertyChanged(); setting.Save(); }
         }
 
         public string ReceiveLogTimeFormat
         {
-            get { return receiveLogTimeFormat; }
-            set { receiveLogTimeFormat = value; }
+            get { return setting.receiveLogTimeFormat; }
+            set { setting.receiveLogTimeFormat = value; setting.Save(); }
         }
 
         public string SendLogTimeFormat
         {
-            get { return sendLogTimeFormat; }
-            set { sendLogTimeFormat = value; }
+            get { return setting.sendLogTimeFormat; }
+            set { setting.sendLogTimeFormat = value; setting.Save(); }
         }
 
         public string LogTimeFormat
         {
-            get { return logTimeFormat; }
-            set { logTimeFormat = value; }
+            get { return setting.logTimeFormat; }
+            set { setting.logTimeFormat = value; setting.Save(); }
         }
 
         public string FileSendingDelay
         {
-            get { return fileSendingDelay.ToString(); }
+            get { return setting.fileSendingDelay.ToString(); }
             set 
             {
                 try
                 {
-                    fileSendingDelay = Convert.ToInt32(value);
+                    setting.fileSendingDelay = Convert.ToInt32(value);
                 }
-                catch (Exception) { fileSendingDelay = 0; }
+                catch (Exception) { setting.fileSendingDelay = 0; }
 
                 RaisePropertyChanged();
+                setting.Save();
             }
         }
 
@@ -338,14 +319,14 @@ namespace DCOM.ViewModel
 
             try
             {
-                serialPort = new SerialPort(comName);
+                serialPort = new SerialPort(setting.comName);
 
-                serialPort.BaudRate = baudRate;
-                serialPort.Parity = parity;
-                serialPort.DataBits = dataBits;
-                serialPort.StopBits = stopBits;
+                serialPort.BaudRate = setting.baudRate;
+                serialPort.Parity = setting.parity;
+                serialPort.DataBits = setting.dataBits;
+                serialPort.StopBits = setting.stopBits;
 
-                serialPort.RtsEnable = rtsEnable;
+                serialPort.RtsEnable = setting.rtsEnable;
 
                 serialPort.DataReceived += new SerialDataReceivedEventHandler(SerialPort_DataReceived);
 
@@ -391,8 +372,8 @@ namespace DCOM.ViewModel
         #region Output operations
         private void PutLog(string text)
         {
-            LogText += System.DateTime.Now.ToString(logTimeFormat);
-            LogText += logLineFeedSplitsTimeAndContent ? '\n' : ':';
+            LogText += System.DateTime.Now.ToString(setting.logTimeFormat);
+            LogText += setting.logLineFeedSplitsTimeAndContent ? '\n' : ':';
             LogText += text + '\n';
         }
 
@@ -400,15 +381,15 @@ namespace DCOM.ViewModel
         {
             
             if (text.Length == 0) return;
-            SendDataLog += System.DateTime.Now.ToString(sendLogTimeFormat) + '(' + (type == 1 ? "十六进制" : sendDataEncoding) + ')';
-            SendDataLog += sendLogLineFeedSplitsTimeAndContent ? '\n' : ':';
+            SendDataLog += System.DateTime.Now.ToString(setting.sendLogTimeFormat) + '(' + (type == 1 ? "十六进制" : setting.sendDataEncoding) + ')';
+            SendDataLog += setting.sendLogLineFeedSplitsTimeAndContent ? '\n' : ':';
             SendDataLog += text + '\n';
         }
 
         private void PutSendFileLog(string fileName)
         {
-            SendDataLog += System.DateTime.Now.ToString(sendLogTimeFormat) + "(File)";
-            SendDataLog += sendLogLineFeedSplitsTimeAndContent ? '\n' : ':';
+            SendDataLog += System.DateTime.Now.ToString(setting.sendLogTimeFormat) + "(File)";
+            SendDataLog += setting.sendLogLineFeedSplitsTimeAndContent ? '\n' : ':';
             SendDataLog += fileName + '\n';
         }
 
@@ -420,16 +401,16 @@ namespace DCOM.ViewModel
                 byte[] buffer = receiveBuffer.ToArray();
 
                 int offset = 0, count = buffer.Length;
-                if (count > maxShowByteCount)
+                if (count > setting.maxShowByteCount)
                 {
-                    offset = count - maxShowByteCount;
-                    count = maxShowByteCount;
+                    offset = count - setting.maxShowByteCount;
+                    count = setting.maxShowByteCount;
                 }
 
                 if (receiveDisplayType == 0)
                     ReceiveData = ByteConvert.ToHex(buffer, offset, count);
                 else
-                    ReceiveData = Encoding.GetEncoding(receiveDataEncoding).GetString(buffer, offset, count);
+                    ReceiveData = Encoding.GetEncoding(setting.receiveDataEncoding).GetString(buffer, offset, count);
             }
             else
             {
@@ -442,7 +423,7 @@ namespace DCOM.ViewModel
                 {
                     tempBlock = receiveBuffer.FindBlock(i);
 
-                    int putCount = maxShowByteCount - count;
+                    int putCount = setting.maxShowByteCount - count;
                     if (putCount > tempBlock.Data.Length)
                     {
                         putCount = tempBlock.Data.Length;
@@ -451,16 +432,16 @@ namespace DCOM.ViewModel
                     if (putCount == 0) break;
 
                     if (receiveDisplayType == 2)
-                        stack.Push(tempBlock.Time.ToString(receiveLogTimeFormat) 
-                            + (receiveLogLineFeedSplitsTimeAndContent ? '\n' : ':')
+                        stack.Push(tempBlock.Time.ToString(setting.receiveLogTimeFormat) 
+                            + (setting.receiveLogLineFeedSplitsTimeAndContent ? '\n' : ':')
                             + ByteConvert.ToHex(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
                     else
-                        stack.Push(tempBlock.Time.ToString(receiveLogTimeFormat) 
-                            + (receiveLogLineFeedSplitsTimeAndContent ? '\n' : ':')
-                            + Encoding.GetEncoding(receiveDataEncoding).GetString(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
+                        stack.Push(tempBlock.Time.ToString(setting.receiveLogTimeFormat) 
+                            + (setting.receiveLogLineFeedSplitsTimeAndContent ? '\n' : ':')
+                            + Encoding.GetEncoding(setting.receiveDataEncoding).GetString(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
 
                     count += tempBlock.Data.Length;
-                    if (count > maxShowByteCount) break;
+                    if (count > setting.maxShowByteCount) break;
                 }
 
                 StringBuilder finalDisplay = new StringBuilder();
@@ -523,7 +504,12 @@ namespace DCOM.ViewModel
             }
             else
             {
-                PutLog("尝试打开" + comName + ", BaudRate=" + baudRate + ", Parity=" + parity.ToString() + ", DataBits=" + dataBits + ", StopBits=" + stopBits + ", " + (rtsEnable ? "RTS Start" : "RTS Close"));
+                PutLog("尝试打开" + setting.comName 
+                    + ", BaudRate=" + setting.baudRate 
+                    + ", Parity=" + setting.parity.ToString() 
+                    + ", DataBits=" + setting.dataBits 
+                    + ", StopBits=" + setting.stopBits + ", " 
+                    + (setting.rtsEnable ? "RTS Start" : "RTS Close"));
                 if (OpenCOM())
                 {
                     PutLog("成功打开串口" );
@@ -551,7 +537,7 @@ namespace DCOM.ViewModel
 
                 if (SendDataType == 0)
                 {
-                    buffer = Encoding.GetEncoding(sendDataEncoding).GetBytes(SendDataText);
+                    buffer = Encoding.GetEncoding(setting.sendDataEncoding).GetBytes(SendDataText);
                     PutSendDataLog(SendDataType, SendDataText);
                 }
                 else
@@ -653,7 +639,7 @@ namespace DCOM.ViewModel
                                 serialPort.Write(buffer, 0, count);
                                 numberBytesSendInt += count;
                                 NumberBytesSend = numberBytesSendInt.ToString();
-                                Thread.Sleep(fileSendingDelay);
+                                Thread.Sleep(setting.fileSendingDelay);
                             }
 
                             if(sendFileStatus)

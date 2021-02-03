@@ -66,7 +66,7 @@
                      Background="Transparent"
                      TextWrapping="Wrap"
                      Margin="5"
-                     FontSize="10"
+                     FontSize="12"
                      Text="{Binding ReceiveData}" 
                      VerticalScrollBarVisibility="Visible"
                      TextChanged="TextBox_TextChanged"/>
@@ -79,6 +79,7 @@
                      Background="Transparent"
                      TextWrapping="Wrap"
                      Margin="5"
+                     FontSize="12"
                      Text="{Binding SendDataLog}" 
                      VerticalScrollBarVisibility="Visible" 
                      TextChanged="TextBox_TextChanged" />
