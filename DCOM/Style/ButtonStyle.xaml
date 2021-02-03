@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:DCOM.Style">
+                    xmlns:local="clr-namespace:DCOM.Style"
+                    xmlns:uc="clr-namespace:DCOM.View.UControl">
 
     <ControlTemplate TargetType="Button" x:Key="CloseButtonTemplate">
         <Border Background="Transparent" Name="back" CornerRadius="0 10 0 10">
@@ -35,5 +36,32 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+
+    <Style TargetType="uc:UrlButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="uc:UrlButton">
+                    <Border Name="border" BorderBrush="Transparent" BorderThickness="1" Background="#00000000">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="30"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Icon}" FontFamily="../../Resource/Fonts/#iconfont" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF44ABF1"/>
+                            <StackPanel Grid.Column="1" Orientation="Vertical" VerticalAlignment="Center" Margin="5 0 0 0">
+                                <TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" FontSize="15"/>
+                                <TextBlock Text="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Tips}" Foreground="#FF767676" FontSize="12"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="White" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 </ResourceDictionary>

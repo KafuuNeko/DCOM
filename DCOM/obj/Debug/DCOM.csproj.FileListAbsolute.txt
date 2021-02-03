@@ -84,3 +84,4 @@ C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\DCOM.exe.manifest
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\DCOM.application
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\Newtonsoft.Json.dll
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\Newtonsoft.Json.xml
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\GeneratedInternalTypeHelper.g.cs

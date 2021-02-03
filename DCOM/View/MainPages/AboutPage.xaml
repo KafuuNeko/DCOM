@@ -4,25 +4,23 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:DCOM.View.MainPages"
+      xmlns:uc="clr-namespace:DCOM.View.UControl"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="AboutPage">
     
+    <Page.Resources>
+        <Style TargetType="ScrollBar" BasedOn="{StaticResource for_scrollbar}"/>
+    </Page.Resources>
+    
     <ScrollViewer>
         <StackPanel Orientation="Vertical">
-            <TextBlock Text="DCOM 串口调试工具" Foreground="White" FontSize="20" FontWeight="Bold" Margin="5 25 0 0"/>
-            
-            <TextBlock Foreground="White" FontSize="16" Margin="10 10 0 0">
-                作者：<Hyperlink NavigateUri="https://kafuu.cc/" Click="Hyperlink_Click">KafuuNeko</Hyperlink>
-            </TextBlock>
+            <TextBlock Text="DCOM 串口调试工具" Foreground="White" FontSize="20" FontWeight="Bold" Margin="5 25 0 20"/>
 
-            <TextBlock Foreground="White" FontSize="16" Margin="10 10 0 0">
-                许可：<Hyperlink NavigateUri="https://github.com/KafuuNeko/DCOM/blob/master/LICENSE" Click="Hyperlink_Click">Apache-2.0</Hyperlink>
-            </TextBlock>
-            <TextBlock Foreground="White" FontSize="16" Margin="10 10 0 0">
-                仓库：<Hyperlink NavigateUri="https://github.com/KafuuNeko/DCOM" Click="Hyperlink_Click">Github</Hyperlink>
-            </TextBlock>
-            
+            <uc:UrlButton Width="250" Height="50" Icon="&#xe647;" Foreground="White" HorizontalAlignment="Left" Content="提交反馈" Margin="10 0 0 0" Tips="向开发者报告问题，并提供更多信息" Url="https://github.com/KafuuNeko/DCOM/issues" Click="UrlButton_Click"/>
+            <uc:UrlButton Width="250" Height="50" Icon="&#xe67b;" Foreground="White" HorizontalAlignment="Left" Content="个人网站" Margin="10 0 0 0" Tips="开发者的个人网站" Url="https://kafuu.cc/" Click="UrlButton_Click"/>
+            <uc:UrlButton Width="250" Height="50" Icon="&#xe67f;" Foreground="White" HorizontalAlignment="Left" Content="许可证" Margin="10 0 0 0" Tips="开源许可" Url="https://github.com/KafuuNeko/DCOM/blob/master/LICENSE" Click="UrlButton_Click"/>
+            <uc:UrlButton Width="250" Height="50" Icon="&#xeba0;" Foreground="White" HorizontalAlignment="Left" Content="代码仓库" Margin="10 0 0 0" Tips="Github仓库" Url="https://github.com/KafuuNeko/DCOM" Click="UrlButton_Click"/>
         </StackPanel>
         
     </ScrollViewer>
