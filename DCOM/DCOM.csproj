@@ -25,8 +25,8 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationVersion>1.2.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -147,6 +147,7 @@
     <Compile Include="Helper\ByteConvert.cs" />
     <Compile Include="Helper\ComHelper.cs" />
     <Compile Include="Model\ComConfig.cs" />
+    <Compile Include="Model\ReceiveBuffer.cs" />
     <Compile Include="ViewModel\MainWindowModel.cs" />
     <Compile Include="View\MainPages\AboutPage.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>

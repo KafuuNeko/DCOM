@@ -42,8 +42,10 @@
                 <TextBlock Foreground="#99FFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center" Text="接收数据"/>
                 
                 <ComboBox Grid.Column="0" Background="#FF050923" IsEditable="False" Foreground="White" IsReadOnly="False" Margin="5 0 0 0" Style="{DynamicResource ComboBoxDefaultStyle}" SelectedIndex="{Binding ReceiveDisplayType}" >
-                    <ComboBoxItem Content="十六进制"/>
-                    <ComboBoxItem Content="文本显示"/>
+                    <ComboBoxItem Content="完整十六进制"/>
+                    <ComboBoxItem Content="完整文本显示"/>
+                    <ComboBoxItem Content="分时十六进制"/>
+                    <ComboBoxItem Content="分时文本显示"/>
                     <!--
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="SelectionChanged">

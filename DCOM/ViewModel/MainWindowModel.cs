@@ -39,19 +39,20 @@ namespace DCOM.ViewModel
             timedTask.Elapsed += TimedTask;
             timedTask.Enabled = true;
             timedTask.Start();
-            timedTask.AutoReset = true;
+            timedTask.AutoReset = false;
         }
 
         private void TimedTask(Object source, ElapsedEventArgs e)
         {
             if(dataUpdate)
             {
+                dataUpdate = false;
                 //Update the number of received bytes displayed
                 NumberBytesReceived = receiveBuffer.Count.ToString();
                 //Update the displayed data
                 DisplayReceiveData();
-                dataUpdate = false;
             }
+            timedTask.Start();
         }
 
         #endregion
@@ -122,7 +123,7 @@ namespace DCOM.ViewModel
 
         #region Field define
 
-        private System.Timers.Timer timedTask = new System.Timers.Timer(10);
+        private System.Timers.Timer timedTask = new System.Timers.Timer(100);
 
         private bool dataUpdate = false;
 
@@ -133,7 +134,7 @@ namespace DCOM.ViewModel
         private int receiveDisplayType = 0;
 
         //Used to hold the received bytes of data
-        private List<byte> receiveBuffer = new List<byte>();
+        private ReceiveBuffer receiveBuffer = new ReceiveBuffer();
 
         //The text that the received data is ultimately presented to the user
         private string receiveData = string.Empty;
@@ -340,20 +341,54 @@ namespace DCOM.ViewModel
         /* Displays data according to the display type set by the user */
         private void DisplayReceiveData()
         {
-            byte[] buffer = receiveBuffer.ToArray();
-            
-
-            int offset = 0, count = buffer.Length;
-            if(count > maxShowByteCount)
+            if(receiveDisplayType == 0 || receiveDisplayType == 1)
             {
-                offset = count - maxShowByteCount;
-                count = maxShowByteCount;
-            }
+                byte[] buffer = receiveBuffer.ToArray();
 
-            if (receiveDisplayType == 0)
-                ReceiveData = ByteConvert.ToHex(buffer, offset, count);
+                int offset = 0, count = buffer.Length;
+                if (count > maxShowByteCount)
+                {
+                    offset = count - maxShowByteCount;
+                    count = maxShowByteCount;
+                }
+
+                if (receiveDisplayType == 0)
+                    ReceiveData = ByteConvert.ToHex(buffer, offset, count);
+                else
+                    ReceiveData = Encoding.GetEncoding(receiveDataEncoding).GetString(buffer, offset, count);
+            }
             else
-                ReceiveData = Encoding.GetEncoding(receiveDataEncoding).GetString(buffer, offset, count);
+            {
+                int count = 0;
+
+                ReceiveBuffer.Block tempBlock;
+                Stack<string> stack = new Stack<string>();
+
+                for (int i = receiveBuffer.BlockCount - 1; i >= 0; --i)
+                {
+                    tempBlock = receiveBuffer.FindBlock(i);
+
+                    int putCount = maxShowByteCount - count;
+                    if (putCount > tempBlock.Data.Length)
+                    {
+                        putCount = tempBlock.Data.Length;
+                    }
+
+                    if (putCount == 0) break;
+
+                    if (receiveDisplayType == 2)
+                        stack.Push(tempBlock.Time.ToString() + '\n' + ByteConvert.ToHex(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
+                    else
+                        stack.Push(tempBlock.Time.ToString() + '\n' + Encoding.GetEncoding(receiveDataEncoding).GetString(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
+
+                    count += tempBlock.Data.Length;
+                    if (count > maxShowByteCount) break;
+                }
+
+                StringBuilder finalDisplay = new StringBuilder();
+                while(stack.Count > 0) finalDisplay.Append(stack.Pop());
+                ReceiveData = finalDisplay.ToString();
+            }
         }
         #endregion
 
@@ -556,16 +591,13 @@ namespace DCOM.ViewModel
             SerialPort sp = (SerialPort)sender;
             
             byte[] readBuffer = new byte[sp.ReadBufferSize];
-
             while(sp.BytesToRead > 0)
             {
                 int size = sp.Read(readBuffer, 0, readBuffer.Length);
-                for(int i = 0; i < size; ++i)
-                    receiveBuffer.Add(readBuffer[i]);
+                receiveBuffer.Add(readBuffer, 0, size);
             }
 
             dataUpdate = true;
-
         }
 
         #endregion
