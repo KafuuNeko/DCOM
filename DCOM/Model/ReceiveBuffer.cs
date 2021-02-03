@@ -58,10 +58,11 @@ namespace DCOM.Model
 
         public byte[] ToArray()
         {
+            int bc = BlockCount;
             byte[] result = new byte[Count];
             int offset = 0;
 
-            for(int i = 0; i < BlockCount; ++i)
+            for(int i = 0; i < bc; ++i)
             {
                 Array.Copy(blocks[i].Data, 0, result, offset, blocks[i].Data.Length);
                 offset += blocks[i].Data.Length;

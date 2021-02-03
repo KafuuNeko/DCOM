@@ -29,7 +29,7 @@ namespace DCOM.ViewModel
             this.ComConfig = new ComConfig();
             RefreshSerialPortList();
 
-            PutLog("打开程序");
+            PutLog("Start");
         }
 
         #region Time task
@@ -161,7 +161,25 @@ namespace DCOM.ViewModel
 
         private ComConfig comConfig;
 
-        public int maxShowByteCount = 6000;
+        private int maxShowByteCount = 6000;
+
+        private Thread sendFileThread = null;
+
+        private bool sendFileStatus = false;
+
+        private bool logLineFeedSplitsTimeAndContent = false;
+
+        private bool sendLogLineFeedSplitsTimeAndContent = true;
+
+        private bool receiveLogLineFeedSplitsTimeAndContent = true;
+
+        private string receiveLogTimeFormat = "yyyy/MM/dd HH:mm:ss  fff:ffffff";
+
+        private string sendLogTimeFormat = "yyyy/MM/dd HH:mm:ss";
+
+        private string logTimeFormat = "yyyy/MM/dd HH:mm:ss";
+
+        private int fileSendingDelay = 0;
         #endregion
 
         #region Property
@@ -254,6 +272,58 @@ namespace DCOM.ViewModel
                 RaisePropertyChanged();
             }
         }
+
+        public bool LogLineFeedSplitsTimeAndContent
+        {
+            get { return logLineFeedSplitsTimeAndContent; }
+            set { logLineFeedSplitsTimeAndContent = value; RaisePropertyChanged(); }
+        }
+
+        public bool SendLogLineFeedSplitsTimeAndContent
+        {
+            get { return sendLogLineFeedSplitsTimeAndContent; }
+            set { sendLogLineFeedSplitsTimeAndContent = value; RaisePropertyChanged(); }
+        }
+
+        public bool ReceiveLogLineFeedSplitsTimeAndContent
+        {
+            get { return receiveLogLineFeedSplitsTimeAndContent; }
+            set { receiveLogLineFeedSplitsTimeAndContent = value; RaisePropertyChanged(); }
+        }
+
+        public string ReceiveLogTimeFormat
+        {
+            get { return receiveLogTimeFormat; }
+            set { receiveLogTimeFormat = value; }
+        }
+
+        public string SendLogTimeFormat
+        {
+            get { return sendLogTimeFormat; }
+            set { sendLogTimeFormat = value; }
+        }
+
+        public string LogTimeFormat
+        {
+            get { return logTimeFormat; }
+            set { logTimeFormat = value; }
+        }
+
+        public string FileSendingDelay
+        {
+            get { return fileSendingDelay.ToString(); }
+            set 
+            {
+                try
+                {
+                    fileSendingDelay = Convert.ToInt32(value);
+                }
+                catch (Exception) { fileSendingDelay = 0; }
+
+                RaisePropertyChanged();
+            }
+        }
+
         #endregion
 
         #region Serial port operation
@@ -321,20 +391,24 @@ namespace DCOM.ViewModel
         #region Output operations
         private void PutLog(string text)
         {
-            LogText += System.DateTime.Now.ToString();
-            LogText += " : " + text + '\n';
+            LogText += System.DateTime.Now.ToString(logTimeFormat);
+            LogText += logLineFeedSplitsTimeAndContent ? '\n' : ':';
+            LogText += text + '\n';
         }
 
         private void PutSendDataLog(int type, string text)
         {
+            
             if (text.Length == 0) return;
-            SendDataLog += System.DateTime.Now.ToString() + '(' + (type == 1 ? "十六进制" : sendDataEncoding) + ')' + '\n';
+            SendDataLog += System.DateTime.Now.ToString(sendLogTimeFormat) + '(' + (type == 1 ? "十六进制" : sendDataEncoding) + ')';
+            SendDataLog += sendLogLineFeedSplitsTimeAndContent ? '\n' : ':';
             SendDataLog += text + '\n';
         }
 
         private void PutSendFileLog(string fileName)
         {
-            SendDataLog += System.DateTime.Now.ToString() + "(File)\n";
+            SendDataLog += System.DateTime.Now.ToString(sendLogTimeFormat) + "(File)";
+            SendDataLog += sendLogLineFeedSplitsTimeAndContent ? '\n' : ':';
             SendDataLog += fileName + '\n';
         }
 
@@ -377,9 +451,13 @@ namespace DCOM.ViewModel
                     if (putCount == 0) break;
 
                     if (receiveDisplayType == 2)
-                        stack.Push(tempBlock.Time.ToString() + '\n' + ByteConvert.ToHex(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
+                        stack.Push(tempBlock.Time.ToString(receiveLogTimeFormat) 
+                            + (receiveLogLineFeedSplitsTimeAndContent ? '\n' : ':')
+                            + ByteConvert.ToHex(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
                     else
-                        stack.Push(tempBlock.Time.ToString() + '\n' + Encoding.GetEncoding(receiveDataEncoding).GetString(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
+                        stack.Push(tempBlock.Time.ToString(receiveLogTimeFormat) 
+                            + (receiveLogLineFeedSplitsTimeAndContent ? '\n' : ':')
+                            + Encoding.GetEncoding(receiveDataEncoding).GetString(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
 
                     count += tempBlock.Data.Length;
                     if (count > maxShowByteCount) break;
@@ -507,17 +585,14 @@ namespace DCOM.ViewModel
             if (ComConfig.ComName != null && ComConfig.ComName.Count != 0) ComName = ComConfig.ComName[0];
         }
 
-
         public void ReceiveDataSaveFile()
         {
-
             CommonSaveFileDialog dialog = new CommonSaveFileDialog();
             if(dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 PutLog("正在尝试将接收区数据保存到 " + dialog.FileName);
                 new Thread(() =>
                 {
-                    
                     byte[] buffer;
                     if(File.Exists(dialog.FileName)) File.Delete(dialog.FileName);
                     using (var fileStream = new FileStream(dialog.FileName, FileMode.OpenOrCreate))
@@ -533,7 +608,6 @@ namespace DCOM.ViewModel
                             PutLog("文件保存失败 " + dialog.FileName);
                         }
                     }
-
                 }).Start();
             }
         }
@@ -546,28 +620,51 @@ namespace DCOM.ViewModel
                 return;
             }
 
+            if (sendFileStatus)
+            {
+                PutLog("正在尝试中止发送文件!");
+                sendFileStatus = false;
+                return;
+            }
+
+            if(sendFileThread != null)
+            {
+                PutLog("请等待上一次发送文件线程结束!");
+                return;
+            }
+
+            sendFileStatus = true;
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
             if(dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
-                PutLog("正在尝试发送文件 " + dialog.FileName);
+                PutLog("正在尝试发送文件(发送文件过程中再次点击发送文件即可中止发送) " + dialog.FileName);
 
-                new Thread(() => 
+                sendFileThread = new Thread(() => 
                 {
                     int count;
-                    byte[] buffer = new byte[16];
+                    byte[] buffer = new byte[8];
                     using (var fileStream = new FileStream(dialog.FileName, FileMode.Open))
                     {
                         try
                         {
-                            while ((count = fileStream.Read(buffer, 0, 16)) > 0)
+                            while ((count = fileStream.Read(buffer, 0, 8)) > 0)
                             {
+                                if (!sendFileStatus) break;
                                 serialPort.Write(buffer, 0, count);
                                 numberBytesSendInt += count;
                                 NumberBytesSend = numberBytesSendInt.ToString();
+                                Thread.Sleep(fileSendingDelay);
                             }
 
-                            PutLog("成功发送文件 " + dialog.FileName);
-                            PutSendFileLog(dialog.FileName);
+                            if(sendFileStatus)
+                            {
+                                PutLog("成功发送文件 " + dialog.FileName);
+                                PutSendFileLog(dialog.FileName);
+                            }
+                            else
+                            {
+                                PutLog("已中止文件发送 " + dialog.FileName);
+                            }
                         }
                         catch(Exception)
                         {
@@ -575,8 +672,12 @@ namespace DCOM.ViewModel
                         }
                     }
 
-                }).Start();
-                
+                    sendFileStatus = false;
+                    sendFileThread = null;
+                });
+                sendFileThread.Start();
+
+
             }
             
         }
