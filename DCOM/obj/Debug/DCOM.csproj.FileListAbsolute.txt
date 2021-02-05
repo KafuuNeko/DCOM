@@ -85,3 +85,5 @@ C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\DCOM.application
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\Newtonsoft.Json.dll
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\Newtonsoft.Json.xml
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\HtmlRenderer.dll
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\HtmlRenderer.pdb

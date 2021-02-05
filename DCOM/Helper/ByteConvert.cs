@@ -9,7 +9,7 @@ namespace DCOM.Helper
 {
     class ByteConvert
     {
-        public static string ToHex(byte data)
+        public static string ByteToHexString(byte data)
         {
 
             StringBuilder sb = new StringBuilder();
@@ -27,7 +27,7 @@ namespace DCOM.Helper
         }
 
 
-        public static string ToHex(byte[] data, int offset = 0, int count = 0)
+        public static string BytesToHexString(byte[] data, int offset = 0, int count = 0)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -38,13 +38,13 @@ namespace DCOM.Helper
             for (int i = 0; i < size; ++i)
             {
                 if (i > 0) sb.Append(' ');
-                sb.Append(ToHex(data[offset + i]));
+                sb.Append(ByteToHexString(data[offset + i]));
             }
 
             return sb.ToString();
         }
 
-        private static int EffectiveDataLength(string str)
+        private static int HexStringEffectiveDataLength(string str)
         {
             int result = 0;
 
@@ -57,9 +57,9 @@ namespace DCOM.Helper
             return result;
         }
 
-        public static byte[] ToBytes(string str)
+        public static byte[] HexStringToBytes(string str)
         {
-            bool flag = ((EffectiveDataLength(str) & 0x1) == 1);
+            bool flag = ((HexStringEffectiveDataLength(str) & 0x1) == 1);
             List<byte> result = new List<byte>();
             int tempWord = 0, tempByte;
             for (int i = 0; i < str.Length; ++i)
@@ -79,5 +79,69 @@ namespace DCOM.Helper
 
             return result.ToArray();
         }
+
+        public static string ByteToBinString(byte data)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            for(int i = 7; i >= 0; --i)
+            {
+                sb.Append((data >> i) & 0x1);
+            }
+            return sb.ToString();
+        }
+
+
+        public static string BytesToBinString(byte[] data, int offset = 0, int count = 0)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            int size = count;
+
+            if (size == 0) size = data.Length;
+
+            for (int i = 0; i < size; ++i)
+            {
+                if (i > 0) sb.Append(' ');
+                sb.Append(ByteToBinString(data[offset + i]));
+            }
+
+            return sb.ToString();
+        }
+
+        private static int BinStringEffectiveDataLength(string str)
+        {
+            int result = 0;
+
+            for (int i = 0; i < str.Length; ++i)
+            {
+                if (str[i] == '0' || str[i] == '1') ++result;
+            }
+
+            return result;
+        }
+
+        public static byte[] BinStringToBytes(string str)
+        {
+            List<byte> result = new List<byte>();
+            int metering = (8 - (BinStringEffectiveDataLength(str) % 8)) % 8;
+
+            int tempByte = 0;
+            for (int i = 0; i < str.Length; ++i)
+            {
+                if (str[i] == '0' || str[i] == '1') tempByte = (tempByte << 1) + (str[i] - '0');
+                else continue;
+
+                if(++metering == 8)
+                {
+                    metering = 0;
+                    result.Add((byte)tempByte);
+                }
+            }
+
+            return result.ToArray();
+        }
+
+
     }
 }

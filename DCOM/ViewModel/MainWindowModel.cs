@@ -32,6 +32,7 @@ namespace DCOM.ViewModel
             RefreshSerialPortList();
 
             PutLog("Start");
+
         }
 
         #region Time task
@@ -373,7 +374,7 @@ namespace DCOM.ViewModel
         private void PutLog(string text)
         {
             LogText += System.DateTime.Now.ToString(setting.logTimeFormat);
-            LogText += setting.logLineFeedSplitsTimeAndContent ? '\n' : ':';
+            LogText += setting.logLineFeedSplitsTimeAndContent ? '\n' : '：';
             LogText += text + '\n';
         }
 
@@ -382,21 +383,21 @@ namespace DCOM.ViewModel
             
             if (text.Length == 0) return;
             SendDataLog += System.DateTime.Now.ToString(setting.sendLogTimeFormat) + '(' + (type == 1 ? "十六进制" : setting.sendDataEncoding) + ')';
-            SendDataLog += setting.sendLogLineFeedSplitsTimeAndContent ? '\n' : ':';
+            SendDataLog += setting.sendLogLineFeedSplitsTimeAndContent ? '\n' : '：';
             SendDataLog += text + '\n';
         }
 
         private void PutSendFileLog(string fileName)
         {
             SendDataLog += System.DateTime.Now.ToString(setting.sendLogTimeFormat) + "(File)";
-            SendDataLog += setting.sendLogLineFeedSplitsTimeAndContent ? '\n' : ':';
+            SendDataLog += setting.sendLogLineFeedSplitsTimeAndContent ? '\n' : '：';
             SendDataLog += fileName + '\n';
         }
 
         /* Displays data according to the display type set by the user */
         private void DisplayReceiveData()
         {
-            if(receiveDisplayType == 0 || receiveDisplayType == 1)
+            if(receiveDisplayType >= 0 && receiveDisplayType <= 2)
             {
                 byte[] buffer = receiveBuffer.ToArray();
 
@@ -408,9 +409,11 @@ namespace DCOM.ViewModel
                 }
 
                 if (receiveDisplayType == 0)
-                    ReceiveData = ByteConvert.ToHex(buffer, offset, count);
-                else
+                    ReceiveData = ByteConvert.BytesToHexString(buffer, offset, count);
+                else if (receiveDisplayType == 1)
                     ReceiveData = Encoding.GetEncoding(setting.receiveDataEncoding).GetString(buffer, offset, count);
+                else
+                    ReceiveData = ByteConvert.BytesToBinString(buffer, offset, count);
             }
             else
             {
@@ -431,14 +434,14 @@ namespace DCOM.ViewModel
 
                     if (putCount == 0) break;
 
-                    if (receiveDisplayType == 2)
-                        stack.Push(tempBlock.Time.ToString(setting.receiveLogTimeFormat) 
-                            + (setting.receiveLogLineFeedSplitsTimeAndContent ? '\n' : ':')
-                            + ByteConvert.ToHex(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
+                    string head = tempBlock.Time.ToString(setting.receiveLogTimeFormat) + (setting.receiveLogLineFeedSplitsTimeAndContent ? '\n' : ':');
+
+                    if (receiveDisplayType == 3)
+                        stack.Push(head + ByteConvert.BytesToHexString(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
+                    else if (receiveDisplayType == 4)
+                        stack.Push(head + Encoding.GetEncoding(setting.receiveDataEncoding).GetString(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
                     else
-                        stack.Push(tempBlock.Time.ToString(setting.receiveLogTimeFormat) 
-                            + (setting.receiveLogLineFeedSplitsTimeAndContent ? '\n' : ':')
-                            + Encoding.GetEncoding(setting.receiveDataEncoding).GetString(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
+                        stack.Push(head + ByteConvert.BytesToBinString(tempBlock.Data, tempBlock.Data.Length - putCount, putCount) + '\n');
 
                     count += tempBlock.Data.Length;
                     if (count > setting.maxShowByteCount) break;
@@ -540,10 +543,15 @@ namespace DCOM.ViewModel
                     buffer = Encoding.GetEncoding(setting.sendDataEncoding).GetBytes(SendDataText);
                     PutSendDataLog(SendDataType, SendDataText);
                 }
+                else if (SendDataType == 1)
+                {
+                    buffer = ByteConvert.HexStringToBytes(SendDataText);
+                    PutSendDataLog(SendDataType, ByteConvert.BytesToHexString(buffer));
+                }
                 else
                 {
-                    buffer = ByteConvert.ToBytes(SendDataText);
-                    PutSendDataLog(SendDataType, ByteConvert.ToHex(buffer));
+                    buffer = ByteConvert.BinStringToBytes(SendDataText);
+                    PutSendDataLog(SendDataType, ByteConvert.BytesToBinString(buffer));
                 }
 
                 if (buffer.Length == 0)
