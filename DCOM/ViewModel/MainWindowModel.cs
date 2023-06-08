@@ -19,7 +19,7 @@ namespace DCOM.ViewModel
 
         public MainWindowModel()
         {
-
+            InitQueueManager();
             InitCommand();
             InitTimeTask();
 
@@ -47,7 +47,7 @@ namespace DCOM.ViewModel
 
         private void TimedTask(Object source, ElapsedEventArgs e)
         {
-            if(dataUpdate)
+            if (dataUpdate)
             {
                 dataUpdate = false;
                 //Update the number of received bytes displayed
@@ -61,7 +61,7 @@ namespace DCOM.ViewModel
         #endregion
 
         #region Serial port property
-        
+
         public string ComName
         {
             get { return setting.comName; }
@@ -69,16 +69,17 @@ namespace DCOM.ViewModel
         }
 
 
-        public string BaudRate 
-        { 
+        public string BaudRate
+        {
             get { return setting.baudRate.ToString(); }
-            set 
-            { 
+            set
+            {
                 try
                 {
                     setting.baudRate = Convert.ToInt32(value);
-                } catch (Exception) { setting.baudRate = 0; }
-                
+                }
+                catch (Exception) { setting.baudRate = 0; }
+
                 RaisePropertyChanged();
                 setting.Save();
             }
@@ -159,6 +160,8 @@ namespace DCOM.ViewModel
         private Thread sendFileThread = null;
 
         private bool sendFileStatus = false;
+
+        private QueueManager queueManager;
 
         #endregion
 
@@ -293,7 +296,7 @@ namespace DCOM.ViewModel
         public string FileSendingDelay
         {
             get { return setting.fileSendingDelay.ToString(); }
-            set 
+            set
             {
                 try
                 {
@@ -370,6 +373,22 @@ namespace DCOM.ViewModel
 
         #endregion
 
+        #region QueueManager
+        private void InitQueueManager()
+        {
+            this.queueManager = new QueueManager();
+
+            this.queueManager.ByteDataReady += (data) =>
+            {
+                serialPort.Write(data, 0, data.Length);
+                numberBytesSendInt += data.Length;
+                NumberBytesSend = numberBytesSendInt.ToString();
+            };
+
+        }
+
+        #endregion
+
         #region Output operations
         private void PutLog(string text)
         {
@@ -380,7 +399,7 @@ namespace DCOM.ViewModel
 
         private void PutSendDataLog(int type, string text)
         {
-            
+
             if (text.Length == 0) return;
             SendDataLog += System.DateTime.Now.ToString(setting.sendLogTimeFormat) + '(' + (type == 1 ? "十六进制" : setting.sendDataEncoding) + ')';
             SendDataLog += setting.sendLogLineFeedSplitsTimeAndContent ? '\n' : '：';
@@ -397,7 +416,7 @@ namespace DCOM.ViewModel
         /* Displays data according to the display type set by the user */
         private void DisplayReceiveData()
         {
-            if(receiveDisplayType >= 0 && receiveDisplayType <= 2)
+            if (receiveDisplayType >= 0 && receiveDisplayType <= 2)
             {
                 byte[] buffer = receiveBuffer.ToArray();
 
@@ -448,7 +467,7 @@ namespace DCOM.ViewModel
                 }
 
                 StringBuilder finalDisplay = new StringBuilder();
-                while(stack.Count > 0) finalDisplay.Append(stack.Pop());
+                while (stack.Count > 0) finalDisplay.Append(stack.Pop());
                 ReceiveData = finalDisplay.ToString();
             }
         }
@@ -492,10 +511,10 @@ namespace DCOM.ViewModel
         /* Open or close the serial port and update the content prompt on the button */
         private void OpenOrCloseCom()
         {
-            if(serialPort != null && serialPort.IsOpen)
+            if (serialPort != null && serialPort.IsOpen)
             {
                 CloseCom();
-                if(serialPort == null)
+                if (serialPort == null)
                 {
                     PutLog("成功关闭串口");
                     OpenOrCloseButtonContent = "打开串口";
@@ -507,15 +526,15 @@ namespace DCOM.ViewModel
             }
             else
             {
-                PutLog("尝试打开" + setting.comName 
-                    + ", BaudRate=" + setting.baudRate 
-                    + ", Parity=" + setting.parity.ToString() 
-                    + ", DataBits=" + setting.dataBits 
-                    + ", StopBits=" + setting.stopBits + ", " 
+                PutLog("尝试打开" + setting.comName
+                    + ", BaudRate=" + setting.baudRate
+                    + ", Parity=" + setting.parity.ToString()
+                    + ", DataBits=" + setting.dataBits
+                    + ", StopBits=" + setting.stopBits + ", "
                     + (setting.rtsEnable ? "RTS Start" : "RTS Close"));
                 if (OpenCOM())
                 {
-                    PutLog("成功打开串口" );
+                    PutLog("成功打开串口");
                     OpenOrCloseButtonContent = "关闭串口";
                 }
                 else
@@ -528,12 +547,12 @@ namespace DCOM.ViewModel
         /* Attempt to send data */
         private void SendData()
         {
-            if(serialPort == null || !serialPort.IsOpen)
+            if (serialPort == null || !serialPort.IsOpen)
             {
                 PutLog("请先连接串口后再发送数据!");
                 return;
             }
-            
+
             try
             {
                 byte[] buffer;
@@ -560,11 +579,7 @@ namespace DCOM.ViewModel
                     return;
                 }
 
-                serialPort.Write(buffer, 0, buffer.Length);
-
-                numberBytesSendInt += buffer.Length;
-
-                NumberBytesSend = numberBytesSendInt.ToString();
+                this.queueManager.AddData(buffer);
             }
             catch (Exception e)
             {
@@ -582,13 +597,13 @@ namespace DCOM.ViewModel
         public void ReceiveDataSaveFile()
         {
             CommonSaveFileDialog dialog = new CommonSaveFileDialog();
-            if(dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 PutLog("正在尝试将接收区数据保存到 " + dialog.FileName);
                 new Thread(() =>
                 {
                     byte[] buffer;
-                    if(File.Exists(dialog.FileName)) File.Delete(dialog.FileName);
+                    if (File.Exists(dialog.FileName)) File.Delete(dialog.FileName);
                     using (var fileStream = new FileStream(dialog.FileName, FileMode.OpenOrCreate))
                     {
                         try
@@ -621,7 +636,7 @@ namespace DCOM.ViewModel
                 return;
             }
 
-            if(sendFileThread != null)
+            if (sendFileThread != null)
             {
                 PutLog("请等待上一次发送文件线程结束!");
                 return;
@@ -629,11 +644,11 @@ namespace DCOM.ViewModel
 
             sendFileStatus = true;
             CommonOpenFileDialog dialog = new CommonOpenFileDialog();
-            if(dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 PutLog("正在尝试发送文件(发送文件过程中再次点击发送文件即可中止发送) " + dialog.FileName);
 
-                sendFileThread = new Thread(() => 
+                sendFileThread = new Thread(() =>
                 {
                     int count;
                     byte[] buffer = new byte[8];
@@ -650,7 +665,7 @@ namespace DCOM.ViewModel
                                 Thread.Sleep(setting.fileSendingDelay);
                             }
 
-                            if(sendFileStatus)
+                            if (sendFileStatus)
                             {
                                 PutLog("成功发送文件 " + dialog.FileName);
                                 PutSendFileLog(dialog.FileName);
@@ -660,7 +675,7 @@ namespace DCOM.ViewModel
                                 PutLog("已中止文件发送 " + dialog.FileName);
                             }
                         }
-                        catch(Exception)
+                        catch (Exception)
                         {
                             PutLog("文件发送失败 " + dialog.FileName);
                         }
@@ -673,7 +688,7 @@ namespace DCOM.ViewModel
 
 
             }
-            
+
         }
 
         #endregion
@@ -684,9 +699,9 @@ namespace DCOM.ViewModel
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort sp = (SerialPort)sender;
-            
+
             byte[] readBuffer = new byte[sp.ReadBufferSize];
-            while(sp.BytesToRead > 0)
+            while (sp.BytesToRead > 0)
             {
                 int size = sp.Read(readBuffer, 0, readBuffer.Length);
                 receiveBuffer.Add(readBuffer, 0, size);

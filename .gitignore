@@ -1,1 +1,4 @@
 .vs/*
+DCOM/bin/*
+DCOM/obj/*
+packages/*

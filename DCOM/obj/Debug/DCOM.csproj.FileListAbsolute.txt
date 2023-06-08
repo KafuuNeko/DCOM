@@ -50,7 +50,6 @@ C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\GalaSoft.MvvmLight.Extras.pd
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\GalaSoft.MvvmLight.Extras.xml
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\GalaSoft.MvvmLight.Platform.pdb
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\GalaSoft.MvvmLight.Platform.xml
-C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\DCOM.csprojAssemblyReference.cache
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\View\MainPages\AboutPage.g.cs
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\View\MainPages\MainPage.g.cs
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\View\MainPages\SettingPage.g.cs
@@ -87,3 +86,5 @@ C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\Newtonsoft.Json.xml
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\GeneratedInternalTypeHelper.g.cs
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\HtmlRenderer.dll
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Debug\HtmlRenderer.pdb
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\DCOM.csproj.AssemblyReference.cache
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Debug\DCOM.csproj.SuggestedBindingRedirects.cache

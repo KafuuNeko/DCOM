@@ -16,7 +16,6 @@ C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Release\GalaSoft.MvvmLight.Platfor
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Release\GalaSoft.MvvmLight.Platform.xml
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Release\Microsoft.WindowsAPICodePack.xml
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Release\Microsoft.WindowsAPICodePack.Shell.xml
-C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Release\DCOM.csprojAssemblyReference.cache
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Release\View\MainPages\AboutPage.g.cs
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Release\View\MainPages\MainPage.g.cs
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Release\View\MainPages\SettingPage.g.cs
@@ -44,3 +43,10 @@ C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Release\DCOM.exe.manifest
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Release\DCOM.application
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Release\DCOM.exe.manifest
 C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Release\DCOM.application
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Release\HtmlRenderer.dll
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Release\Newtonsoft.Json.dll
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Release\HtmlRenderer.pdb
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\bin\Release\Newtonsoft.Json.xml
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Release\DCOM.csproj.AssemblyReference.cache
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Release\DCOM.csproj.SuggestedBindingRedirects.cache
+C:\Users\kafuu\Documents\GitHub\DCOM\DCOM\obj\Release\GeneratedInternalTypeHelper.g.cs

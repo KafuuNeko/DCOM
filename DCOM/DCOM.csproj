@@ -58,10 +58,10 @@
     <ApplicationIcon>connecting_32px.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>1AF018E6E6132F3E41FCB62DFCB85B5FF9523100</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>EA65FB4229B40C5C77DF2C5423893F1837ADE753</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>DCOM_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>DCOM_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -118,6 +118,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helper\QueueManager.cs" />
     <Compile Include="View\UControl\RichTextBoxHelper.cs" />
     <Compile Include="View\UControl\UrlButton.cs" />
     <Page Include="Style\ButtonStyle.xaml">
@@ -194,6 +195,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="DCOM_1_TemporaryKey.pfx" />
     <None Include="DCOM_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

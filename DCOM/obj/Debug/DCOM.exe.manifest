@@ -55,14 +55,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DCOM.exe" size="89520">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="DCOM.exe" size="91104">
       <assemblyIdentity name="DCOM" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>LQihK2H+qRH/T/NXqHYNGIYu8257k+Ixj7BHti7d+5w=</dsig:DigestValue>
+        <dsig:DigestValue>+D50V7T1pNWI8BEHwXqNtzae1OU5PVxzakqZymN7XA4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
